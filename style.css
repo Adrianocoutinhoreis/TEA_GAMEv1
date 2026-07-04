@@ -53,8 +53,21 @@
     box-sizing: border-box;
 }
 
+/* Fonte-raiz fluida: como quase todas as medidas usam rem, o jogo
+   inteiro encolhe proporcionalmente em telas mais baixas e cabe
+   sem precisar de barra de rolagem */
 html {
-    font-size: 18px;
+    font-size: clamp(13px, 2.05vh, 18px);
+    scrollbar-width: none; /* rede de segurança: se rolar, sem barra visível */
+}
+
+body {
+    -ms-overflow-style: none;
+}
+
+::-webkit-scrollbar {
+    width: 0;
+    height: 0;
 }
 
 body {
@@ -280,8 +293,8 @@ h2 {
     border: 2px solid var(--cor-primaria);
     border-radius: var(--raio);
     padding: 0.8rem;
-    min-width: 90px;
-    min-height: 60px;
+    min-width: 5rem;
+    min-height: 3.4rem;
 }
 
 .item-visual {
@@ -312,7 +325,7 @@ h2 {
     border: 2px solid var(--cor-azul);
     border-radius: 16px;
     padding: 0.3rem 1rem;
-    min-width: 70px;
+    min-width: 3.9rem;
 }
 
 /* O quadradinho da resposta: alvo do arrastar e soltar */
@@ -320,8 +333,8 @@ h2 {
     background-color: var(--cor-pessego-claro);
     border: 3px dashed var(--cor-pessego);
     color: var(--cor-texto-suave);
-    min-width: 92px;
-    min-height: 76px;
+    min-width: 5.2rem;
+    min-height: 4.3rem;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -361,8 +374,8 @@ h2 {
     font-family: inherit;
     font-size: 2rem;
     font-weight: 700;
-    width: 90px;
-    height: 90px;
+    width: 5rem;
+    height: 5rem;
     border-radius: var(--raio);
     color: var(--cor-texto);
     cursor: grab;
@@ -494,8 +507,11 @@ h2 {
     outline: none;
 }
 
+/* O botão "Próxima" mantém seu espaço reservado mesmo invisível:
+   nada se move na tela quando ele aparece (previsibilidade) e o
+   cartão não cresce, evitando a barra de rolagem */
 .escondido {
-    display: none;
+    visibility: hidden;
 }
 
 /* ---------- Tela final ---------- */
@@ -554,7 +570,7 @@ h2 {
 
 @media (max-width: 600px) {
     html {
-        font-size: 16px;
+        font-size: clamp(12px, 2vh, 16px);
     }
 
     .tela {
@@ -613,13 +629,13 @@ h2 {
 
     .numero {
         font-size: 1.9rem;
-        min-width: 54px;
+        min-width: 3.4rem;
         padding: 0.25rem 0.6rem;
     }
 
     .interrogacao {
-        min-width: 76px;
-        min-height: 64px;
+        min-width: 4.75rem;
+        min-height: 4rem;
     }
 
     .operador {
@@ -632,8 +648,8 @@ h2 {
 
     /* Fichas continuam grandes o bastante para o toque (mínimo 44px) */
     .botao-opcao {
-        width: 78px;
-        height: 78px;
+        width: 4.9rem;
+        height: 4.9rem;
         font-size: 1.7rem;
     }
 
@@ -675,13 +691,13 @@ h2 {
 @media (max-width: 370px) {
     .numero {
         font-size: 1.6rem;
-        min-width: 46px;
+        min-width: 2.9rem;
         padding: 0.2rem 0.5rem;
     }
 
     .interrogacao {
-        min-width: 64px;
-        min-height: 56px;
+        min-width: 4rem;
+        min-height: 3.5rem;
     }
 
     .operador {
@@ -689,8 +705,8 @@ h2 {
     }
 
     .botao-opcao {
-        width: 70px;
-        height: 70px;
+        width: 4.4rem;
+        height: 4.4rem;
         font-size: 1.5rem;
     }
 
@@ -702,13 +718,41 @@ h2 {
 /* ---------- Celular deitado / telas baixas ---------- */
 
 @media (max-height: 520px) {
+    html {
+        font-size: clamp(10px, 2.7vh, 14px);
+    }
+
     .tela {
         justify-content: flex-start;
-        padding: 0.6rem;
+        padding: 0.4rem;
     }
 
     .cartao {
-        padding: 1rem;
+        padding: 0.7rem 1rem;
+        border-top-width: 5px;
+    }
+
+    .instrucao {
+        font-size: 0.95rem;
+    }
+
+    .opcoes {
+        margin-bottom: 0.6rem;
+    }
+
+    .botao-principal {
+        padding: 0.6rem 2rem;
+    }
+
+    /* Aproveita a largura da tela deitada: mais colunas de desenhos,
+       menos fileiras, menos altura ocupada */
+    .grupo-itens {
+        grid-template-columns: repeat(10, auto);
+    }
+
+    .feedback {
+        min-height: 1.6rem;
+        margin-bottom: 0.5rem;
     }
 
     .mascote {
@@ -727,10 +771,10 @@ h2 {
     }
 
     .conta {
-        margin-bottom: 0.8rem;
+        margin-bottom: 0.6rem;
     }
 
     .barra-topo {
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.3rem;
     }
 }
