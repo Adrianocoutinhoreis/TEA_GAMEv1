@@ -356,7 +356,9 @@
             ficha.classList.add("tentar-novamente");
             ficha.disabled = true;
 
-            el.feedback.textContent = FRASE_APOIO;
+            // A tartaruga mascote acolhe: mesmo personagem do início,
+            // nunca um símbolo de erro (❌, carinha triste, vermelho)
+            el.feedback.textContent = "🐢 " + FRASE_APOIO;
             el.feedback.className = "feedback apoio";
 
             somApoio();
