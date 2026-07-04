@@ -1,0 +1,736 @@
+/* ============================================================
+   Jogo da Soma — design pensado para o público TEA
+   - Cores pastéis presentes, porém suaves (sem tons estridentes)
+   - Sem animações bruscas, piscantes ou rápidas
+   - Layout previsível e com poucos elementos por tela
+   - Fontes grandes, arredondadas e legíveis
+   - Interação por arrastar e soltar, com alvo grande e claro
+   ============================================================ */
+
+:root {
+    /* Fundo com dois tons calmos (gradiente bem sutil) */
+    --cor-fundo-1: #ddefe6;
+    --cor-fundo-2: #d9e7f6;
+
+    --cor-cartao: #fffdf9;          /* branco levemente quente */
+    --cor-texto: #3a4a52;
+    --cor-texto-suave: #64757e;
+
+    /* Verde principal */
+    --cor-primaria: #55a08a;
+    --cor-primaria-escura: #3f8672;
+    --cor-primaria-clara: #dff0e8;
+
+    /* Azul */
+    --cor-azul: #7fa8d9;
+    --cor-azul-escuro: #4f7cb3;
+    --cor-azul-claro: #e1ecfa;
+
+    /* Lavanda */
+    --cor-lavanda: #a99bd1;
+    --cor-lavanda-escura: #7a6ab0;
+    --cor-lavanda-clara: #ece7f8;
+
+    /* Pêssego (usado no apoio ao erro — acolhedor, nunca vermelho) */
+    --cor-pessego: #e8b986;
+    --cor-pessego-escuro: #b07f42;
+    --cor-pessego-claro: #fdeeda;
+
+    /* Amarelo suave (mascote / detalhes) */
+    --cor-amarelo-claro: #faf0d7;
+
+    --cor-acerto-fundo: #e0f2e7;
+    --cor-acerto-borda: #7dbd94;
+
+    --cor-borda: #d8e2dd;
+    --sombra: 0 4px 14px rgba(58, 74, 82, 0.10);
+    --raio: 20px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 18px;
+}
+
+body {
+    font-family: "Segoe UI", "Trebuchet MS", Verdana, sans-serif;
+    background: linear-gradient(160deg, var(--cor-fundo-1) 0%, var(--cor-fundo-2) 100%);
+    background-attachment: fixed;
+    color: var(--cor-texto);
+    min-height: 100vh;
+    min-height: 100dvh; /* considera a barra de endereço dos navegadores móveis */
+    line-height: 1.5;
+}
+
+button {
+    touch-action: manipulation;           /* evita zoom por toque duplo no celular */
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* ---------- Telas ---------- */
+
+.tela {
+    display: none;
+    min-height: 100vh;
+    min-height: 100dvh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+}
+
+.tela.ativa {
+    display: flex;
+}
+
+.cartao {
+    background-color: var(--cor-cartao);
+    border-radius: var(--raio);
+    border-top: 8px solid var(--cor-primaria);
+    box-shadow: var(--sombra);
+    padding: 2rem;
+    width: 100%;
+    max-width: 640px;
+    text-align: center;
+}
+
+/* ---------- Tela inicial ---------- */
+
+.mascote {
+    font-size: 3.4rem;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 6rem;
+    height: 6rem;
+    background-color: var(--cor-amarelo-claro);
+    border: 3px solid var(--cor-pessego);
+    border-radius: 50%;
+    margin-bottom: 0.8rem;
+}
+
+h1 {
+    font-size: 2rem;
+    color: var(--cor-primaria-escura);
+    margin-bottom: 0.5rem;
+}
+
+h2 {
+    font-size: 1.8rem;
+    color: var(--cor-primaria-escura);
+    margin-bottom: 0.5rem;
+}
+
+.subtitulo {
+    color: var(--cor-texto-suave);
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+}
+
+.rotulo-nivel {
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.escolha-nivel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.botao-nivel {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    padding: 1rem 1.2rem;
+    font-family: inherit;
+    font-size: 1.1rem;
+    border-radius: var(--raio);
+    cursor: pointer;
+    transition: filter 0.3s ease, box-shadow 0.3s ease;
+    text-align: left;
+    color: var(--cor-texto);
+}
+
+/* Cada nível tem sua própria cor suave — ajuda a reconhecer e escolher */
+.botao-nivel[data-nivel="1"] {
+    background-color: var(--cor-primaria-clara);
+    border: 3px solid var(--cor-primaria);
+}
+
+.botao-nivel[data-nivel="2"] {
+    background-color: var(--cor-azul-claro);
+    border: 3px solid var(--cor-azul);
+}
+
+.botao-nivel[data-nivel="3"] {
+    background-color: var(--cor-lavanda-clara);
+    border: 3px solid var(--cor-lavanda);
+}
+
+.botao-nivel:hover,
+.botao-nivel:focus-visible {
+    filter: brightness(0.97);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(85, 160, 138, 0.35);
+}
+
+.icone-nivel {
+    font-size: 2rem;
+}
+
+.texto-nivel {
+    display: flex;
+    flex-direction: column;
+}
+
+.texto-nivel small {
+    color: var(--cor-texto-suave);
+}
+
+/* ---------- Barra superior ---------- */
+
+.barra-topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 640px;
+    margin-bottom: 1rem;
+    gap: 0.5rem;
+}
+
+.botao-icone {
+    font-family: inherit;
+    font-size: 1rem;
+    padding: 0.6rem 1rem;
+    background-color: var(--cor-cartao);
+    border: 2px solid var(--cor-azul);
+    border-radius: 14px;
+    cursor: pointer;
+    color: var(--cor-texto);
+    transition: box-shadow 0.3s ease;
+}
+
+.botao-icone:hover,
+.botao-icone:focus-visible {
+    box-shadow: 0 0 0 3px rgba(127, 168, 217, 0.35);
+    outline: none;
+}
+
+/* ---------- Progresso (bolinhas) ---------- */
+
+.progresso {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.ponto {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: #c3d4cd;
+    transition: background-color 0.4s ease;
+}
+
+.ponto.feito {
+    background-color: var(--cor-primaria);
+}
+
+.ponto.atual {
+    background-color: var(--cor-azul);
+}
+
+/* ---------- Área do jogo ---------- */
+
+.instrucao {
+    font-size: 1.15rem;
+    color: var(--cor-texto-suave);
+    margin-bottom: 1.5rem;
+}
+
+.instrucao strong {
+    color: var(--cor-azul-escuro);
+}
+
+.area-visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.grupo-itens {
+    display: grid;
+    grid-template-columns: repeat(5, auto);
+    gap: 0.35rem;
+    justify-content: center;
+    background-color: var(--cor-primaria-clara);
+    border: 2px solid var(--cor-primaria);
+    border-radius: var(--raio);
+    padding: 0.8rem;
+    min-width: 90px;
+    min-height: 60px;
+}
+
+.item-visual {
+    font-size: 1.8rem;
+    line-height: 1;
+}
+
+.sinal {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--cor-primaria-escura);
+}
+
+/* ---------- Conta em números ---------- */
+
+.conta {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+}
+
+.numero {
+    font-size: 2.6rem;
+    font-weight: 700;
+    background-color: var(--cor-azul-claro);
+    border: 2px solid var(--cor-azul);
+    border-radius: 16px;
+    padding: 0.3rem 1rem;
+    min-width: 70px;
+}
+
+/* O quadradinho da resposta: alvo do arrastar e soltar */
+.interrogacao {
+    background-color: var(--cor-pessego-claro);
+    border: 3px dashed var(--cor-pessego);
+    color: var(--cor-texto-suave);
+    min-width: 92px;
+    min-height: 76px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Quando a ficha está em cima do alvo: convite claro para soltar */
+.interrogacao.pronta {
+    background-color: var(--cor-acerto-fundo);
+    border: 3px solid var(--cor-acerto-borda);
+    color: var(--cor-primaria-escura);
+}
+
+.interrogacao.respondida {
+    background-color: var(--cor-acerto-fundo);
+    border: 3px solid var(--cor-acerto-borda);
+    color: var(--cor-primaria-escura);
+}
+
+.operador {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--cor-lavanda-escura);
+}
+
+/* ---------- Fichas de resposta (arrastáveis) ---------- */
+
+.opcoes {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.2rem;
+}
+
+.botao-opcao {
+    font-family: inherit;
+    font-size: 2rem;
+    font-weight: 700;
+    width: 90px;
+    height: 90px;
+    border-radius: var(--raio);
+    color: var(--cor-texto);
+    cursor: grab;
+    touch-action: none; /* necessário para arrastar com o dedo */
+    transition: box-shadow 0.3s ease, opacity 0.3s ease;
+    box-shadow: 0 3px 0 rgba(58, 74, 82, 0.15);
+}
+
+/* Cada ficha tem uma cor suave própria (nenhuma indica "certo" ou "errado") */
+.botao-opcao.ficha-1 {
+    background-color: var(--cor-azul-claro);
+    border: 3px solid var(--cor-azul);
+}
+
+.botao-opcao.ficha-2 {
+    background-color: var(--cor-lavanda-clara);
+    border: 3px solid var(--cor-lavanda);
+}
+
+.botao-opcao.ficha-3 {
+    background-color: var(--cor-amarelo-claro);
+    border: 3px solid var(--cor-pessego);
+}
+
+.botao-opcao:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(127, 168, 217, 0.45);
+}
+
+.botao-opcao:disabled {
+    cursor: default;
+    opacity: 0.4;
+    box-shadow: none;
+}
+
+/* Ficha correta encaixada */
+.botao-opcao.correta {
+    background-color: var(--cor-acerto-fundo);
+    border-color: var(--cor-acerto-borda);
+    color: var(--cor-primaria-escura);
+    opacity: 1;
+}
+
+/* Ficha que não era a resposta: fica pálida, sem cor de "erro" */
+.botao-opcao.tentar-novamente {
+    background-color: var(--cor-pessego-claro);
+    border-color: var(--cor-pessego);
+}
+
+/* Enquanto a ficha original está sendo arrastada */
+.botao-opcao.origem-arrasto {
+    opacity: 0.3;
+    cursor: grabbing;
+}
+
+/* Cópia da ficha que segue o dedo ou o mouse */
+.fantasma {
+    position: fixed;
+    margin: 0;
+    z-index: 100;
+    pointer-events: none;
+    opacity: 0.95;
+    cursor: grabbing;
+    box-shadow: 0 8px 18px rgba(58, 74, 82, 0.25);
+}
+
+/* Retorno suave ao lugar quando solta fora do alvo */
+.fantasma.voltando {
+    transition: left 0.3s ease, top 0.3s ease;
+}
+
+/* ---------- Feedback ---------- */
+
+.feedback {
+    min-height: 2.2rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.feedback.acerto {
+    color: var(--cor-primaria-escura);
+}
+
+.feedback.apoio {
+    color: var(--cor-pessego-escuro);
+}
+
+/* ---------- Botões principais ---------- */
+
+.botao-principal {
+    font-family: inherit;
+    font-size: 1.2rem;
+    font-weight: 600;
+    padding: 0.9rem 2.2rem;
+    background-color: var(--cor-primaria);
+    color: #ffffff;
+    border: none;
+    border-radius: var(--raio);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.botao-principal:hover,
+.botao-principal:focus-visible {
+    background-color: var(--cor-primaria-escura);
+    outline: none;
+}
+
+.botao-principal:focus-visible {
+    box-shadow: 0 0 0 3px rgba(85, 160, 138, 0.4);
+}
+
+.botao-secundario {
+    font-family: inherit;
+    font-size: 1.1rem;
+    padding: 0.9rem 2rem;
+    background-color: var(--cor-cartao);
+    color: var(--cor-texto);
+    border: 2px solid var(--cor-azul);
+    border-radius: var(--raio);
+    cursor: pointer;
+    transition: box-shadow 0.3s ease;
+}
+
+.botao-secundario:hover,
+.botao-secundario:focus-visible {
+    box-shadow: 0 0 0 3px rgba(127, 168, 217, 0.35);
+    outline: none;
+}
+
+.escondido {
+    display: none;
+}
+
+/* ---------- Tela final ---------- */
+
+.estrelas-finais {
+    font-size: 2.2rem;
+    margin: 1rem 0 1.5rem;
+    letter-spacing: 0.3rem;
+}
+
+.botoes-finais {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+/* ---------- Animação suave de entrada do item visual ---------- */
+
+.item-visual {
+    animation: aparecer 0.5s ease both;
+}
+
+@keyframes aparecer {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* Respeita a preferência do usuário por menos movimento */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* ============================================================
+   Responsividade — tablets e celulares
+   Mantém os mesmos elementos nas mesmas posições (previsibilidade),
+   apenas ajustando tamanhos e espaçamentos.
+   ============================================================ */
+
+/* ---------- Tablets (até 900px) ---------- */
+
+@media (max-width: 900px) {
+    .cartao {
+        max-width: 560px;
+    }
+
+    .barra-topo {
+        max-width: 560px;
+    }
+}
+
+/* ---------- Celulares (até 600px) ---------- */
+
+@media (max-width: 600px) {
+    html {
+        font-size: 16px;
+    }
+
+    .tela {
+        padding: 0.8rem;
+        justify-content: flex-start;
+        padding-top: 1rem;
+    }
+
+    .cartao {
+        padding: 1.2rem 1rem;
+    }
+
+    .mascote {
+        font-size: 2.6rem;
+        width: 4.8rem;
+        height: 4.8rem;
+    }
+
+    h1 {
+        font-size: 1.6rem;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    .instrucao {
+        font-size: 1.05rem;
+        margin-bottom: 1rem;
+    }
+
+    .area-visual {
+        gap: 0.6rem;
+        margin-bottom: 1rem;
+    }
+
+    .grupo-itens {
+        padding: 0.6rem;
+        min-width: 70px;
+        min-height: 50px;
+        gap: 0.25rem;
+    }
+
+    .item-visual {
+        font-size: 1.35rem;
+    }
+
+    .sinal {
+        font-size: 1.8rem;
+    }
+
+    .conta {
+        gap: 0.5rem;
+        margin-bottom: 1.2rem;
+    }
+
+    .numero {
+        font-size: 1.9rem;
+        min-width: 54px;
+        padding: 0.25rem 0.6rem;
+    }
+
+    .interrogacao {
+        min-width: 76px;
+        min-height: 64px;
+    }
+
+    .operador {
+        font-size: 1.7rem;
+    }
+
+    .opcoes {
+        gap: 0.7rem;
+    }
+
+    /* Fichas continuam grandes o bastante para o toque (mínimo 44px) */
+    .botao-opcao {
+        width: 78px;
+        height: 78px;
+        font-size: 1.7rem;
+    }
+
+    .botao-principal,
+    .botao-secundario {
+        width: 100%;
+        max-width: 320px;
+    }
+
+    /* Barra do topo: só os ícones, com área de toque confortável */
+    .texto-botao-topo {
+        display: none;
+    }
+
+    .botao-icone {
+        min-width: 48px;
+        min-height: 48px;
+        padding: 0.5rem 0.8rem;
+        font-size: 1.1rem;
+    }
+
+    .ponto {
+        width: 13px;
+        height: 13px;
+    }
+
+    .botao-nivel {
+        padding: 0.9rem 1rem;
+    }
+
+    .estrelas-finais {
+        font-size: 1.7rem;
+        letter-spacing: 0.15rem;
+    }
+}
+
+/* ---------- Celulares bem estreitos (até 370px) ---------- */
+
+@media (max-width: 370px) {
+    .numero {
+        font-size: 1.6rem;
+        min-width: 46px;
+        padding: 0.2rem 0.5rem;
+    }
+
+    .interrogacao {
+        min-width: 64px;
+        min-height: 56px;
+    }
+
+    .operador {
+        font-size: 1.4rem;
+    }
+
+    .botao-opcao {
+        width: 70px;
+        height: 70px;
+        font-size: 1.5rem;
+    }
+
+    .conta {
+        gap: 0.35rem;
+    }
+}
+
+/* ---------- Celular deitado / telas baixas ---------- */
+
+@media (max-height: 520px) {
+    .tela {
+        justify-content: flex-start;
+        padding: 0.6rem;
+    }
+
+    .cartao {
+        padding: 1rem;
+    }
+
+    .mascote {
+        font-size: 2rem;
+        width: 3.6rem;
+        height: 3.6rem;
+        margin-bottom: 0.2rem;
+    }
+
+    .instrucao {
+        margin-bottom: 0.6rem;
+    }
+
+    .area-visual {
+        margin-bottom: 0.6rem;
+    }
+
+    .conta {
+        margin-bottom: 0.8rem;
+    }
+
+    .barra-topo {
+        margin-bottom: 0.5rem;
+    }
+}

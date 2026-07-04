@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo da Soma</title>
+    <link rel="stylesheet" href="style.css?v=2">
+</head>
+<body>
+
+    <!-- ===================== TELA INICIAL ===================== -->
+    <section id="tela-inicio" class="tela ativa">
+        <div class="cartao cartao-inicio">
+            <div class="mascote" aria-hidden="true">🐢</div>
+            <h1>Jogo da Soma</h1>
+            <p class="subtitulo">Vamos contar e somar juntos, no seu tempo.</p>
+
+            <div class="escolha-nivel">
+                <p class="rotulo-nivel">Escolha como quer jogar:</p>
+                <button class="botao-nivel" data-nivel="1">
+                    <span class="icone-nivel" aria-hidden="true">🌱</span>
+                    <span class="texto-nivel">
+                        <strong>Começando</strong>
+                        <small>Somas até 5</small>
+                    </span>
+                </button>
+                <button class="botao-nivel" data-nivel="2">
+                    <span class="icone-nivel" aria-hidden="true">🌿</span>
+                    <span class="texto-nivel">
+                        <strong>Praticando</strong>
+                        <small>Somas até 10</small>
+                    </span>
+                </button>
+                <button class="botao-nivel" data-nivel="3">
+                    <span class="icone-nivel" aria-hidden="true">🌳</span>
+                    <span class="texto-nivel">
+                        <strong>Avançando</strong>
+                        <small>Somas até 20</small>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== TELA DO JOGO ===================== -->
+    <section id="tela-jogo" class="tela">
+        <header class="barra-topo">
+            <button id="botao-voltar" class="botao-icone" title="Voltar ao início" aria-label="Voltar ao início">
+                🏠 <span class="texto-botao-topo">Início</span>
+            </button>
+
+            <div id="progresso" class="progresso" aria-label="Progresso da atividade"></div>
+
+            <button id="botao-som" class="botao-icone" title="Ligar ou desligar o som" aria-label="Ligar ou desligar o som" aria-pressed="true">
+                🔊 <span class="texto-botao-topo">Som</span>
+            </button>
+        </header>
+
+        <main class="cartao cartao-jogo">
+            <p id="instrucao" class="instrucao">Conte os desenhos e <strong>arraste</strong> o número certo até o quadradinho.</p>
+
+            <div class="area-visual" aria-hidden="true">
+                <div id="grupo-a" class="grupo-itens"></div>
+                <div class="sinal">+</div>
+                <div id="grupo-b" class="grupo-itens"></div>
+            </div>
+
+            <div class="conta" id="conta-texto">
+                <span id="numero-a" class="numero">3</span>
+                <span class="operador">+</span>
+                <span id="numero-b" class="numero">2</span>
+                <span class="operador">=</span>
+                <span id="interrogacao" class="numero interrogacao">?</span>
+            </div>
+
+            <div id="opcoes" class="opcoes"></div>
+
+            <div id="feedback" class="feedback" role="status" aria-live="polite"></div>
+
+            <button id="botao-proxima" class="botao-principal escondido">
+                Próxima <span aria-hidden="true">→</span>
+            </button>
+        </main>
+    </section>
+
+    <!-- ===================== TELA FINAL ===================== -->
+    <section id="tela-final" class="tela">
+        <div class="cartao cartao-final">
+            <div class="mascote" aria-hidden="true">🐢</div>
+            <h2>Você terminou!</h2>
+            <p id="resumo-final" class="subtitulo">Muito bem! Você completou todas as somas.</p>
+            <div id="estrelas-finais" class="estrelas-finais" aria-hidden="true"></div>
+            <div class="botoes-finais">
+                <button id="botao-jogar-novamente" class="botao-principal">Jogar de novo</button>
+                <button id="botao-inicio-final" class="botao-secundario">Voltar ao início</button>
+            </div>
+        </div>
+    </section>
+
+    <script src="script.js?v=2"></script>
+</body>
+</html>
