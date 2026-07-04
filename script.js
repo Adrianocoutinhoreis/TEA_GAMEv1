@@ -149,6 +149,8 @@
             var ponto = document.createElement("span");
             ponto.className = "ponto";
             if (i < estado.perguntaAtual) ponto.classList.add("feito");
+            // Apenas a bolinha recém-conquistada pulsa uma vez
+            if (i === estado.perguntaAtual - 1) ponto.classList.add("recem-feito");
             if (i === estado.perguntaAtual) ponto.classList.add("atual");
             el.progresso.appendChild(ponto);
         }
@@ -390,11 +392,15 @@
     function mostrarFinal() {
         mostrarTela("final");
 
-        var estrelas = "";
+        el.estrelasFinais.innerHTML = "";
         for (var i = 0; i < TOTAL_PERGUNTAS; i++) {
-            estrelas += i < estado.acertosPrimeira ? "⭐" : "🌟";
+            var estrela = document.createElement("span");
+            estrela.className = "estrela-final";
+            estrela.textContent = i < estado.acertosPrimeira ? "⭐" : "🌟";
+            // Uma estrela por vez, em ritmo calmo
+            estrela.style.animationDelay = (i * 0.25) + "s";
+            el.estrelasFinais.appendChild(estrela);
         }
-        el.estrelasFinais.textContent = estrelas;
 
         el.resumoFinal.textContent =
             "Você completou as " + TOTAL_PERGUNTAS + " somas. Parabéns pelo seu esforço!";

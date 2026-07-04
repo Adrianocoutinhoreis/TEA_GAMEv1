@@ -101,6 +101,23 @@ button {
     display: flex;
 }
 
+/* O cartão surge devagar ao trocar de tela: marca a mudança de
+   contexto sem sobressalto */
+.tela.ativa .cartao {
+    animation: entrar-suave 0.6s ease both;
+}
+
+@keyframes entrar-suave {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
 .cartao {
     background-color: var(--cor-cartao);
     border-radius: var(--raio);
@@ -126,6 +143,14 @@ button {
     border: 3px solid var(--cor-pessego);
     border-radius: 50%;
     margin-bottom: 0.8rem;
+    /* "Respiração" bem leve: ritmo calmo, amplitude mínima.
+       Só aparece nas telas de início e fim — nunca durante a conta */
+    animation: respirar 4s ease-in-out infinite alternate;
+}
+
+@keyframes respirar {
+    from { transform: translateY(0); }
+    to   { transform: translateY(-4px); }
 }
 
 h1 {
@@ -259,6 +284,17 @@ h2 {
     background-color: var(--cor-primaria);
 }
 
+/* Só a bolinha recém-conquistada dá um pulso único e discreto */
+.ponto.recem-feito {
+    animation: confirmar 0.6s ease;
+}
+
+@keyframes confirmar {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.35); }
+    100% { transform: scale(1); }
+}
+
 .ponto.atual {
     background-color: var(--cor-azul);
 }
@@ -352,6 +388,14 @@ h2 {
     background-color: var(--cor-acerto-fundo);
     border: 3px solid var(--cor-acerto-borda);
     color: var(--cor-primaria-escura);
+    /* O número "encaixa" com um crescer-e-voltar único e suave */
+    animation: encaixar 0.5s ease;
+}
+
+@keyframes encaixar {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.08); }
+    100% { transform: scale(1); }
 }
 
 .operador {
@@ -380,8 +424,14 @@ h2 {
     color: var(--cor-texto);
     cursor: grab;
     touch-action: none; /* necessário para arrastar com o dedo */
-    transition: box-shadow 0.3s ease, opacity 0.3s ease;
+    transition: box-shadow 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
     box-shadow: 0 3px 0 rgba(58, 74, 82, 0.15);
+}
+
+/* A ficha "levanta" de leve, convidando a pegar */
+.botao-opcao:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 8px rgba(58, 74, 82, 0.18);
 }
 
 /* Cada ficha tem uma cor suave própria (nenhuma indica "certo" ou "errado") */
@@ -431,7 +481,8 @@ h2 {
     cursor: grabbing;
 }
 
-/* Cópia da ficha que segue o dedo ou o mouse */
+/* Cópia da ficha que segue o dedo ou o mouse — levemente maior,
+   como um objeto que foi "pego" */
 .fantasma {
     position: fixed;
     margin: 0;
@@ -439,6 +490,7 @@ h2 {
     pointer-events: none;
     opacity: 0.95;
     cursor: grabbing;
+    transform: scale(1.06);
     box-shadow: 0 8px 18px rgba(58, 74, 82, 0.25);
 }
 
@@ -462,6 +514,17 @@ h2 {
 
 .feedback.apoio {
     color: var(--cor-pessego-escuro);
+}
+
+/* A mensagem surge num fade único, sem saltar */
+.feedback.acerto,
+.feedback.apoio {
+    animation: surgir 0.45s ease;
+}
+
+@keyframes surgir {
+    from { opacity: 0; }
+    to   { opacity: 1; }
 }
 
 /* ---------- Botões principais ---------- */
@@ -509,9 +572,15 @@ h2 {
 
 /* O botão "Próxima" mantém seu espaço reservado mesmo invisível:
    nada se move na tela quando ele aparece (previsibilidade) e o
-   cartão não cresce, evitando a barra de rolagem */
+   cartão não cresce, evitando a barra de rolagem.
+   Ele aparece e some num fade suave. */
 .escondido {
     visibility: hidden;
+    opacity: 0;
+}
+
+#botao-proxima {
+    transition: opacity 0.5s ease, visibility 0.5s, background-color 0.3s ease;
 }
 
 /* ---------- Tela final ---------- */
@@ -520,6 +589,12 @@ h2 {
     font-size: 2.2rem;
     margin: 1rem 0 1.5rem;
     letter-spacing: 0.3rem;
+}
+
+/* As estrelas da tela final aparecem uma a uma, num ritmo calmo */
+.estrela-final {
+    display: inline-block;
+    animation: aparecer 0.6s ease both;
 }
 
 .botoes-finais {
